@@ -1,4 +1,4 @@
-# Guard
+# Guard [![Circle CI](https://circleci.com/gh/bubobox/guard/tree/master.svg?style=shield)](https://circleci.com/gh/bubobox/guard/tree/master)
 
 Fine grained permission checking library built with REST resources in mind.
 
