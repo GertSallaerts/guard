@@ -1,0 +1,21 @@
+{
+    "name": "bubobox/guard",
+    "description": "Fine grained permission checking library built with REST resources in mind",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gert",
+            "email": "gert@bubobox.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "4.7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "BuboBox\\Guard\\": "src/"
+        }
+    }
+}
