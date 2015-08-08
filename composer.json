@@ -20,5 +20,8 @@
         "psr-4": {
             "BuboBox\\Guard\\": "src/"
         }
+    },
+    "scripts": {
+        "test": "phpunit && phpcs -p --standard=PSR2 src"
     }
 }

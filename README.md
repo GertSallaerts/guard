@@ -8,6 +8,14 @@ Fine grained permission checking library built with REST resources in mind.
 composer require bubobox/guard
 ```
 
+## Developing
+
+Unit test and code quality checks are all integrated into the composer `test` script, please run the following command before checking anything in, CircleCI will run the same tests to check your code.
+
+```
+composer test
+```
+
 ## Usage
 
 There are two ways to use the library. Either with a `Guard` instance or by turning your own classes (e.g. the class you use for the currently active user) into locks by implementing the `LockInterface` on them.
