@@ -25,19 +25,36 @@ class Guard
         $this->caller = $caller;
     }
 
-    public function allow($action = '*', $resource = '*', $property = '*', callable $assertion = null) {
+    public function allow($action = '*', $resource = '*', $property = '*', callable $assertion = null)
+    {
         $action = $this->emptyToStar($action);
         $resource = $this->emptyToStar($this->getName($resource));
         $property = $this->emptyToStar($property);
 
         $this->allowed[$action] = isset($this->allowed[$action]) ? $this->allowed[$action] : [];
-        $this->allowed[$action][$resource] = isset($this->allowed[$action][$resource]) ? $this->allowed[$action][$resource] : [];
+
+        $this->allowed[$action][$resource] =
+            isset($this->allowed[$action][$resource]) ?
+            $this->allowed[$action][$resource] :
+            []
+        ;
+
         $this->allowed[$action][$resource][$property] = true;
 
         if ($assertion) {
             $this->assertions[$action] = isset($this->assertions[$action]) ? $this->assertions[$action] : [];
-            $this->assertions[$action][$resource] = isset($this->assertions[$action][$resource]) ? $this->assertions[$action][$resource] : [];
-            $this->assertions[$action][$resource][$property] = isset($this->assertions[$action][$resource][$property]) ? $this->assertions[$action][$resource][$property] : [];
+
+            $this->assertions[$action][$resource] =
+                isset($this->assertions[$action][$resource]) ?
+                $this->assertions[$action][$resource] :
+                []
+            ;
+
+            $this->assertions[$action][$resource][$property] =
+                isset($this->assertions[$action][$resource][$property]) ?
+                $this->assertions[$action][$resource][$property] :
+                []
+            ;
 
             $this->assertions[$action][$resource][$property][] = $assertion;
         }
@@ -45,7 +62,8 @@ class Guard
         return $this;
     }
 
-    public function deny($action = '*', $resource = '*', $property = '*') {
+    public function deny($action = '*', $resource = '*', $property = '*')
+    {
         $action = $this->emptyToStar($action);
         $resource = $this->emptyToStar($this->getName($resource));
         $property = $this->emptyToStar($property);
@@ -61,12 +79,17 @@ class Guard
         return $this;
     }
 
-    public function can($action, $resource = null, $property = null) {
+    public function can($action, $resource = null, $property = null)
+    {
         $resourceName = $this->getName($resource);
 
         $checks = [ $action ];
-        if ($resourceName) $checks[] = $resourceName;
-        if ($resourceName && $property) $checks[] = $property;
+        if ($resourceName) {
+            $checks[] = $resourceName;
+        }
+        if ($resourceName && $property) {
+            $checks[] = $property;
+        }
         $count = count($checks);
 
         $holder = $this->allowed;
@@ -78,13 +101,15 @@ class Guard
             $deniedCheck = trim($deniedCheck . '.' . $check, '.');
             $denied = in_array($deniedCheck, $this->denied);
 
-            if ($denied)
+            if ($denied) {
                 return false;
+            }
 
             $allowed = isset($holder[$check]) || isset($holder['*']);
 
-            if (!$allowed)
+            if (!$allowed) {
                 return false;
+            }
 
             $holder = !isset($holder[$check]) ? !isset($holder['*']) ? [] : $holder['*'] : $holder[$check];
         }
@@ -102,11 +127,13 @@ class Guard
 
     protected function getName($thing)
     {
-        if ($thing instanceof ResourceInterface)
+        if ($thing instanceof ResourceInterface) {
             return $thing->getResourceId();
+        }
 
-        if ($thing instanceof CallerInterface)
+        if ($thing instanceof CallerInterface) {
             return $thing->getCallerId();
+        }
 
         return $thing;
     }
@@ -120,24 +147,21 @@ class Guard
     {
         $assertions = [];
 
-        if (
-            isset($this->assertions[$checks[0]]) &&
+        if (isset($this->assertions[$checks[0]]) &&
             isset($this->assertions[$checks[0]]['*']) &&
             isset($this->assertions[$checks[0]]['*']['*'])
         ) {
             $assertions = $this->assertions[$checks[0]]['*']['*'];
         }
 
-        if (
-            isset($this->assertions[$checks[0]]) &&
+        if (isset($this->assertions[$checks[0]]) &&
             isset($this->assertions[$checks[0]][$checks[1]]) &&
             isset($this->assertions[$checks[0]][$checks[1]]['*'])
         ) {
             $assertions = array_merge($assertions, $this->assertions[$checks[0]][$checks[1]]['*']);
         }
 
-        if (
-            isset($this->assertions[$checks[0]]) &&
+        if (isset($this->assertions[$checks[0]]) &&
             isset($this->assertions[$checks[0]][$checks[1]]) &&
             isset($this->assertions[$checks[0]][$checks[1]][$checks[2]])
         ) {
